@@ -6,28 +6,34 @@ Kevin Stark 高梦扬
 
 As robot technology becomes widely applied, simplifying human-robot interaction has become a hot topic for research. Traditional robot operation interfaces (such as CNC machines in factories and large robotic arms on assembly lines) usually require users to have professional programming knowledge and skills (such as writing Gcode and PLC programming), which limits the use by non-professionals.    
 
-To address this issue, we propose a human-robot interaction system that controls robot movement using a large language model (LLM) within the Robot Operating System (ROS). This system achieves intuitive control of the robot, reducing the barrier to entry, allowing ordinary users to interact with robots more easily and naturally.  
+To address this issue, we propose **a human-robot interaction system that controls robot movement using a large language model (LLM) within the Robot Operating System (ROS)**.** This system achieves intuitive control of the robot, reducing the barrier to entry, allowing ordinary users to interact with robots more easily and naturally.  
 We all know that controlling robots is a very important matter. In many courses on the theory of robotics, we have learned many core knowledge of robot motion control, including many concepts and methods in kinematics and dynamics, such as forward kinematics solution, inverse kinematics solution, Cartesian coordinate transformation, and so on. These knowledge are crucial for robot operation, but they are often too complex for non-professionals to master.  
 The process for a robot to complete a task is roughly as follows:  
-Connect the planning group required for control, set the target pose (joint space or Cartesian space), set motion constraints and path constraints, and use motion solvers and planners (such as the Moveit framework) to plan a feasible motion path, and then execute.  
-There are already many mature kinematics solvers. However, it is still a challenging task to define a task and how to decompose a task into instructions that a program/agent/robot can execute or target coordinates and poses, so that the next solver/planner can calculate and plan.  
-This project takes the classic small turtle in ROS, turtlesim, as an example.  Implements the use of a LLM to understand user input and convert it into turtlesim node operation instructions in ROS.  
+
+1. Connect the planning group required for control
+
+2. Set the target pose (joint space or Cartesian space)
+3. set motion constraints and path constraints,
+4. Use motion solvers and planners (such as the Moveit framework) to plan a feasible motion path 
+5. Execute.  
+
+There are already many mature kinematics solvers. However, it is still a challenging task to define a task and to decompose a task into instructions chains that programs/agents/robots can execute or target coordinates and poses, so that the next solver/planner can calculate and plan.  
+**This project takes the classic small turtle in ROS, `turtlesim`, as an example.  Implements the use of a LLM to understand user input and convert it into turtlesim node operation instructions in ROS.**  
 
 Under the ROS, this project combines the rapidly developing technology related to LLM with robot body control, enabling the robot to better understand human instructions and requirements, reducing the barrier to human-robot interaction, and expanding the types of tasks that robots can perform.  
 This project is a small attempt, and we believe that through this approach, users can interact with robots more easily, thus expanding the application scope of robot technology.
 
-![figure0_running](./figure0_running.jpg)
+![figure0_running](./README.assets/figure0_running.jpg)
 
-The core logic of the system is divided into the following steps:
-1. Users send control commands to the system through natural language (voice or text).
-2. The system parses the command using a LLM with customized knowledge and converts it into ROS control code.
-3. In ROS, each node executes the code to control the robot to perform corresponding actions.
+# Toolbox and Software
 
-# Tools
+System: 
 
-System: Ubuntu 22.04
+* Ubuntu 22.04
 
-ROS: ROS 2 Humble
+ROS: 
+
+* ROS 2 Humble
 
 LLM: 
 
@@ -40,7 +46,7 @@ LLM:
 ## 1. Clone the repo to local computer
 
 ```sh
-	git clone https://github.com/ksdreamer/llm-ros.git
+git clone https://github.com/ksdreamer/LLM-Robot.git
 ```
 
 ## 2. Environment setup
@@ -121,13 +127,15 @@ ros2 run rosgpt rosgpt_client_node
 
 In the terminal of rosgpt_client_node, type English commands to the robot (can be personalized and colloquial).  For example, “ı want that you move 1 meter speed 0.8”.
 
-# Result and Disscusion
+# Formulation
 
-we send a message in terminal, and the turtle simulator will run as we want. 
+The core logic of the system is divided into the following steps:
 
-![figure1_move_before](./figure1_move_before.png)
+1. Users send control commands to the system through natural language (voice or text).
+2. The system parses the command using a LLM with customized knowledge and converts it into ROS control code.
+3. In ROS, each node executes the code to control the robot to perform corresponding actions.
 
-![figure2_move_after](./figure2_move_after.png)
+# Methods
 
 ## LLM
 
@@ -189,9 +197,9 @@ pip install litellm
 
 RQT is shown below:
 
-![figure3_rqt_all](./figure3_rqt_all.jpg)
+![figure3_rqt_all](./README.assets/figure3_rqt_all.jpg)
 
-![figure4_rqt_nodes_only](./figure4_rqt_nodes_only.jpg)
+![figure4_rqt_nodes_only](./README.assets/figure4_rqt_nodes_only.jpg)
 
 ### rosgpt_client
 
@@ -263,23 +271,69 @@ class ROSGPTNode(Node):
 
 Define chatgpt_ros2_node，create a publisher，publish commands by topic 'voice_cmd' in JSON format.
 
-# Reference and Acknowledgment
+### turtlesim_controller
 
-## ROSGPT
+The turtlesim_controller node is used to control the ROS turtlesim simulator. It receives commands from the `/voice_cmd` topic, parse these commands, and publish the parsed commands to the `/turtle1/cmd_vel` topic to control the movement of the turtlesim simulator. At the same time, it also subscribes to the `/turtle1/pose` topic to obtain the current position and orientation information of the turtlesim simulator.
+1. The constructor function of the `__init__` class initializes the node and creates subscribers and publishers.
+   - `self.create_subscription(String, '/voice_cmd', self.voice_cmd_callback, 10)`: This line of code creates a subscriber that subscribes to the topic named `/voice_cmd`, with the message type `String`. Whenever a new message is published to this topic, the `self.voice_cmd_callback` function will be called.
+   - `self.velocity_publisher = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)`: This line of code creates a publisher to publish `Twist` type messages to the topic `/turtle1/cmd_vel`.
+   - `self.pose_subscriber = self.create_subscription(Pose, "/turtle1/pose", self.pose_callback, 10)`: This line of code creates a subscriber that subscribes to the topic named `/turtle1/pose`, with the message type `Pose`. Whenever a new message is published to this topic, the `self.pose_callback` function will be called.
+   - `self.thread_executor = ThreadPoolExecutor(max_workers=1)` and `self.move_executor = SingleThreadedExecutor()`: These two lines of code create two executors, one is a thread pool executor, and the other is a single-threaded executor.
+2. `pose_callback`: Callback function, which is called whenever there is a new message on the `/turtle1/pose` topic. It stores the x, y, and theta values from the message in the instance variables of the class.
+3. `voice_cmd_callback`: Callback function, which is called whenever there is a new message on the `/voice_cmd` topic. It parses and converts the received JSON message into a ROS 2 command.
 
-In our project, we implemented a human-robot interaction system using the ROSGPT package, developed by Anis Koubaa (2023). ROSGPT integrates the ChatGPT language model with the Robot Operating System (ROS) to enable natural language understanding and generation for robotic tasks. The project is available on github, [ROSGPT: ChatGPT Interface for ROS2 for Human-Robot Interaction](https://github.com/aniskoubaa/rosgptKoubaa), 
+![figure5_text_command](./README.assets/figure5_text_command.png)
 
-Koubaa, A. (2023). ROSGPT: Next-Generation Human-Robot Interaction with ChatGPT and ROS. Preprints.org, 2023, 2023040827. https://www.preprints.org/manuscript/202304.0827/v2
+![figure6_motion_record](./README.assets/figure6_motion_record.png)
 
-## Tools we use
+# Result and Disscusion
+
+we send a message in terminal, asking it to move forward for 1 meter.  
+
+The turtle simulator run as we want. 
+
+![figure1_move_before](./README.assets/figure1_move_before.png)
+
+![figure2_move_after](./README.assets/figure2_move_after.png)
+
+# Conclusion
+
+This project, which integrates a large language model (LLM) with the Robot Operating System (ROS) to control the movement of robots, holds potential significance. It has several key advantages and potential application scenarios:
+1. **Reduced Operational Threshold**: By utilizing natural language processing technology, the project enables non-professional users to interact with robots more easily, thereby lowering the technical barrier to using robots.
+2. **Enhanced User Experience**: The natural language interface offers a more intuitive and natural human-machine interaction, allowing users to communicate with robots more naturally.
+3. **Improved Robot's Ability to Execute Complex Tasks and Application Range**: The capabilities of the LLM mean that the system can understand and execute more complex instructions, enhancing the robot's flexibility and adaptability.  
+
+However, the project also faces some challenges and limitations:
+
+1. **Technical Complexity**: Integrating LLM and ROS requires profound understanding in both fields. More fundamentally, it is the combination of AI and Robotics. A relatively cutting-edge direction in this area might be Reinforcement Learning on Robotics. This project is just a tiny scratch on the surface.
+2. **Performance and Reliability**: The foundation of the LLM is the Transformer architecture, which is prone to hallucinations and forgetting. Accuracy may be affected by input data and context.
+3. **Safety**: Ensuring the safety of the system and avoiding potential misoperations.
+
+In future, might add these features:
+
+* vision language model
+* moveit 2 framework
+* robot simulation like gazebo and webots, (and thesedays I am learning about the NVIDIA's Omniverse and Isaac Sim)
+
+# References and Acknowledgment
+
+In our project, we implemented a human-robot interaction system based on the ROSGPT package, developed by Anis Koubaa (2023). ROSGPT integrates the ChatGPT language model with the Robot Operating System (ROS) to enable natural language understanding and generation for robotic tasks. The project is available on github, [ROSGPT: ChatGPT Interface for ROS2 for Human-Robot Interaction](https://github.com/aniskoubaa/rosgptKoubaa), 
+
+Koubaa, A. (2023). ROSGPT: Next-Generation Human-Robot Interaction with ChatGPT and ROS. Preprints.org, 2023, 2023040827. https://www.preprints.org/manuscript/202304.0827/v2. 
+
+
+
+Tools we use:
 
 [ROS 2 Documentation: Humble](https://docs.ros.org/en/humble/index.html)
 
 [Ollama]( https://ollama.com)
 
-[Litellm](https://docs.litellm.ai/docs)
+[Litellm](https://docs.litellm.ai/docs)  
 
-## Other Reference
+
+
+Other References:
 
 https://github.com/NoneJou072/robochain
 
