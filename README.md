@@ -1,13 +1,19 @@
 Kevin Stark 高梦扬
 
+[toc]
+
 # Introduction
 
-As robot technology becomes widely applied, simplifying human-robot interaction has become a hot topic for research. Traditional robot operation interfaces (such as CNC machines in factories and large robotic arms on assembly lines) usually require users to have professional programming knowledge and skills (such as writing Gcode and PLC programming), which limits the use by non-professionals. To address this issue, we propose a human-robot interaction system that controls robot movement using a large language model (LLM) within the Robot Operating System (ROS). This system achieves intuitive control of the robot, reducing the barrier to entry, allowing ordinary users to interact with robots more easily and naturally.
-We all know that controlling robots is a very important matter. In many courses on the theory of robotics, we have learned many core knowledge of robot motion control, including many concepts and methods in kinematics and dynamics, such as forward kinematics solution, inverse kinematics solution, Cartesian coordinate transformation, and so on. These knowledge are crucial for robot operation, but they are often too complex for non-professionals to master.
-The process for a robot to complete a task is roughly as follows:
-Connect the planning group (group) required for control, set the target pose (joint space or Cartesian space), set motion constraints and path constraints, and use motion solvers and planners (such as the Moveit framework) to plan a feasible motion path, and then execute.
-There are already many mature kinematics solvers. However, how to define a task and how to decompose a task into instructions that a program can execute or target coordinates and poses, so that the next solver/planner can calculate and plan, is still a challenging task.
-This project takes the classic small turtle in ROS, turtlesim, as an example, and implements the use of a large language model to understand user input and convert it into turtlesim node operation instructions in ROS. Under the Robot Operating System (ROS), this project combines the rapidly developing technology related to large language models (LLM) with robot body control, enabling the robot to better understand human instructions and requirements, reducing the barrier to human-robot interaction, and expanding the types of tasks that robots can perform.
+As robot technology becomes widely applied, simplifying human-robot interaction has become a hot topic for research. Traditional robot operation interfaces (such as CNC machines in factories and large robotic arms on assembly lines) usually require users to have professional programming knowledge and skills (such as writing Gcode and PLC programming), which limits the use by non-professionals.    
+
+To address this issue, we propose a human-robot interaction system that controls robot movement using a large language model (LLM) within the Robot Operating System (ROS). This system achieves intuitive control of the robot, reducing the barrier to entry, allowing ordinary users to interact with robots more easily and naturally.  
+We all know that controlling robots is a very important matter. In many courses on the theory of robotics, we have learned many core knowledge of robot motion control, including many concepts and methods in kinematics and dynamics, such as forward kinematics solution, inverse kinematics solution, Cartesian coordinate transformation, and so on. These knowledge are crucial for robot operation, but they are often too complex for non-professionals to master.  
+The process for a robot to complete a task is roughly as follows:  
+Connect the planning group required for control, set the target pose (joint space or Cartesian space), set motion constraints and path constraints, and use motion solvers and planners (such as the Moveit framework) to plan a feasible motion path, and then execute.  
+There are already many mature kinematics solvers. However, it is still a challenging task to define a task and how to decompose a task into instructions that a program/agent/robot can execute or target coordinates and poses, so that the next solver/planner can calculate and plan.  
+This project takes the classic small turtle in ROS, turtlesim, as an example.  Implements the use of a LLM to understand user input and convert it into turtlesim node operation instructions in ROS.  
+
+Under the ROS, this project combines the rapidly developing technology related to LLM with robot body control, enabling the robot to better understand human instructions and requirements, reducing the barrier to human-robot interaction, and expanding the types of tasks that robots can perform.  
 This project is a small attempt, and we believe that through this approach, users can interact with robots more easily, thus expanding the application scope of robot technology.
 
 ![figure0_running](./figure0_running.jpg)
@@ -16,7 +22,6 @@ The core logic of the system is divided into the following steps:
 1. Users send control commands to the system through natural language (voice or text).
 2. The system parses the command using a LLM with customized knowledge and converts it into ROS control code.
 3. In ROS, each node executes the code to control the robot to perform corresponding actions.
-4. (Possible future development direction) Add a feedback system, where the robot will feed back the execution results to the system, which will then convert the results into natural language and provide feedback to the user.
 
 # Tools
 
@@ -28,67 +33,67 @@ LLM:
 
 * A: Commercial LLM, like ChatGPT
 * B: Open-Source LLM, like Llama3 (optional)
-* Use Ollama to bulid a local llm environment, use LiteLLM to provide local llm's API.
+* Use Ollama to bulid a Local LLM environment, use LiteLLM to provide API.
 
 # Getting Start
 
-1. Clone the repo to local computer
+## 1. Clone the repo to local computer
 
-   ```sh
-   	git clone https://github.com/ksdreamer/llm-ros.git
-   ```
+```sh
+	git clone https://github.com/ksdreamer/llm-ros.git
+```
 
-2. Environment setup
+## 2. Environment setup
 
-* Add OpenAI API (or local large language model API, please refer to the “LLM” section for details)
+1. Add OpenAI API (or local large language model API, please refer to the “LLM” section for details)
 
 ```
 echo 'export OPENAI_API_KEY=<put_your_api_key_here>' >> ~/.bashrc
 ```
 
-* For ROS2 Humble version (Ubuntu 22.04), you need to downgrade setuptools to the specified version (58.0.2)
+2. For ROS2 Humble version (Ubuntu 22.04), you need to downgrade setuptools to the specified version (58.0.2)
 
 ```
 pip3 install --upgrade setuptools==58.0.2
 ```
 
-* Enter the workspace
+3. Enter the workspace
 
 ```
 cd llm-ros
 ```
 
-* Install Python dependencies
+4. Install Python dependencies
 
 ```
 	pip3 install -r requirements.txt
 ```
 
-* ROS uses colcon to build packages
+5. ROS uses colcon to build packages
 
 ```
 colcon build --packages-select rosgpt
 ```
 
-* ROS source workspace
+6. ROS source workspace
 
 ```
 source install/setup.bash
 ```
 
-3. Use it
+## 3. Usage
 
-   We will use two functional packages: rosgpt and turtlesim.
+We will use two functional packages: rosgpt and turtlesim.
 
-   Four nodes:
+Four nodes:
 
-   rosgpt has three: rosgpt, rosgptparser_turtlesim, rosgpt_client_node.
+rosgpt has three: rosgpt, rosgptparser_turtlesim, rosgpt_client_node.
 
-   turtlesim has one: turtlesim_node.
+turtlesim has one: turtlesim_node.
 
-   Therefore, you need to open four terminals, which can be quickly created by pressing “ctrl+alt+t”.
+Therefore, you need to open four terminals, which can be quickly created by pressing “ctrl+alt+t”.
 
-   Before running each node of the rosgpt package (steps 1, 3, 4), you must enter the work directory and source install/setup.bash.
+Before running each node of the rosgpt package (1, 3, 4 below), you must enter the work directory and `source install/setup.bash`
 
 * Run the ROSGPT Flask server
 
@@ -114,9 +119,7 @@ ros2 run turtlesim turtlesim_node
 ros2 run rosgpt rosgpt_client_node
 ```
 
-
-
-In the terminal of rosgpt_client_node, issue English commands to the robot (can be personalized and colloquial), for example, “ı want that you move 1 meter speed 0.8”.
+In the terminal of rosgpt_client_node, type English commands to the robot (can be personalized and colloquial).  For example, “ı want that you move 1 meter speed 0.8”.
 
 # Result and Disscusion
 
@@ -149,7 +152,7 @@ The most important idea of this project is to use large language models such as 
                     
                     '''
 
-Because the length of the prompt is variable, it needs to be split and then recombined. When the prompt is called with `prompt +=`, it will append the string on the right to the end of the prompt.
+Because the length of the prompt is flexible, it needs to be split and then recombined. When the prompt is called with `prompt +=`, it will append the string on the right to the end of the prompt.
 If the user input `text_command` is:
 "Hey robot, please move 5 meters to the right and pick up the package on the table".
 Then the returned JSON command will be:
@@ -158,23 +161,25 @@ In fact, if there is no Persona or Embedding Vector, the node will return the `p
 
 ### Local LLM(Optional)
 
-If you want to use the local llm, the models you can refer to [llama.cpp](https://github.com/ggerganov/llama.cpp) ,[ollama](https://ollama.com/) and [LMStudio](https://lmstudio.ai. The API of local LLM you can generate from LiteLLM](https://www.litellm.ai)。
+If you want to use the Local Open-Source LLM instead of Commercial ones:
 
+To find and deploy the models, you can refer to [llama.cpp](https://github.com/ggerganov/llama.cpp) ,[ollama](https://ollama.com/) and [LMStudio](https://lmstudio.ai). 
 
+To generate the API of local LLM, you can refer to [LiteLLM](https://www.litellm.ai)。
 
-We use Ollama to handle local LLM
+We use Ollama to deploy local LLM
 
 ```sh
 curl -fsSL https://ollama.com/install.sh
 ```
 
-Find the LLM that match your requirement on https://ollama.com/library , and type this: (we use llama3 as the open-source LLM)
+Find the LLM that match your requirement from https://ollama.com/library , and type this: (we use llama3 as the Open-Source LLM)
 
 ```sh
 ollama run llama3
 ```
 
-enter in terminal to install LiteLLM.
+Enter in terminal to install LiteLLM.
 
 ```sh
 pip install litellm
@@ -258,17 +263,15 @@ class ROSGPTNode(Node):
 
 Define chatgpt_ros2_node，create a publisher，publish commands by topic 'voice_cmd' in JSON format.
 
+# Reference and Acknowledgment
 
-
-# Reference
+## ROSGPT
 
 In our project, we implemented a human-robot interaction system using the ROSGPT package, developed by Anis Koubaa (2023). ROSGPT integrates the ChatGPT language model with the Robot Operating System (ROS) to enable natural language understanding and generation for robotic tasks. The project is available on github, [ROSGPT: ChatGPT Interface for ROS2 for Human-Robot Interaction](https://github.com/aniskoubaa/rosgptKoubaa), 
 
 Koubaa, A. (2023). ROSGPT: Next-Generation Human-Robot Interaction with ChatGPT and ROS. Preprints.org, 2023, 2023040827. https://www.preprints.org/manuscript/202304.0827/v2
 
-˙
-
-We also use these tools:
+## Tools we use
 
 [ROS 2 Documentation: Humble](https://docs.ros.org/en/humble/index.html)
 
@@ -278,14 +281,17 @@ We also use these tools:
 
 ## Other Reference
 
-[鱼香 ROS](https://fishros.com/d2lros2/)
-
-[古月居·ROS2入门21讲](https://www.bilibili.com/video/BV16B4y1Q7jQ/)
-
-[Python import openai library ImportError](https://stackoverflow.com/questions/71873182/no-module-named-openai)
-
 https://github.com/NoneJou072/robochain
 
 https://github.com/Auromix/ROS-LLM
 
 https://github.com/GT-RIPL/Awesome-LLM-Robotics
+
+[Python import openai library ImportError](https://stackoverflow.com/questions/71873182/no-module-named-openai)
+
+[鱼香 ROS](https://fishros.com/d2lros2/)
+
+[古月居·ROS2入门21讲](https://www.bilibili.com/video/BV16B4y1Q7jQ/)
+
+
+
