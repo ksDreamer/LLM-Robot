@@ -67,25 +67,19 @@ echo 'export OPENAI_API_KEY=<put_your_api_key_here>' >> ~/.bashrc
 pip3 install --upgrade setuptools==58.0.2
 ```
 
-3. Enter the workspace
-
-```
-cd llm-ros
-```
-
-4. Install Python dependencies
+3. Install Python dependencies
 
 ```
 	pip3 install -r requirements.txt
 ```
 
-5. ROS uses colcon to build packages
+4. ROS uses colcon to build packages
 
 ```
 colcon build --packages-select rosgpt
 ```
 
-6. ROS source workspace
+5. ROS source workspace
 
 ```
 source install/setup.bash
