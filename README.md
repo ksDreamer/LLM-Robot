@@ -27,7 +27,7 @@ There are already many mature kinematics solvers. However, it is still a challen
 Under the ROS, this project combines the rapidly developing technology related to LLM with robot body control, enabling the robot to better understand human instructions and requirements, reducing the barrier to human-robot interaction, and expanding the types of tasks that robots can perform.  
 This project is a small attempt, and we believe that through this approach, users can interact with robots more easily, thus expanding the application scope of robot technology.
 
-![figure0_running](./README.assets/figure0_running.jpg)
+![figure0_running](./figure0_running.jpg)
 
 # Toolbox and Software
 
@@ -201,9 +201,9 @@ pip install litellm
 
 RQT is shown below:
 
-![figure3_rqt_all](./README.assets/figure01_rqt_all.jpg)
+![figure3_rqt_all](./figure01_rqt_all.jpg)
 
-![figure4_rqt_nodes_only](./README.assets/figure02_rqt_nodes_only.jpg)
+![figure4_rqt_nodes_only](./figure02_rqt_nodes_only.jpg)
 
 ### rosgpt_client
 
@@ -292,9 +292,9 @@ we send a message in terminal, asking it to move forward for 1 meter.
 
 The turtle simulator run as we want. 
 
-![figure01_movebefore](./README.assets/figure03_movebefore.png)
+![figure01_movebefore](./figure03_movebefore.png)
 
-![figure02_moveafter](./README.assets/figure04_moveafter.png)
+![figure02_moveafter](./figure04_moveafter.png)
 
 # Conclusion
 
