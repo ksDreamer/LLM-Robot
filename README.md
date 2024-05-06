@@ -1,8 +1,8 @@
-Use LLM to understand user input and control the robot under ROS
+**Use LLM to understand user input and control the robot under ROS**
 
 Kevin Stark 高梦扬
 
-202164010233
+2024/05/06
 
 [toc]
 
