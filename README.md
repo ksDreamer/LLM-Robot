@@ -1,4 +1,8 @@
+Use LLM to understand user input and control the robot under ROS
+
 Kevin Stark 高梦扬
+
+202164010233
 
 [toc]
 
@@ -197,9 +201,9 @@ pip install litellm
 
 RQT is shown below:
 
-![figure3_rqt_all](./README.assets/figure3_rqt_all.jpg)
+![figure3_rqt_all](./README.assets/figure01_rqt_all.jpg)
 
-![figure4_rqt_nodes_only](./README.assets/figure4_rqt_nodes_only.jpg)
+![figure4_rqt_nodes_only](./README.assets/figure02_rqt_nodes_only.jpg)
 
 ### rosgpt_client
 
@@ -282,19 +286,15 @@ The turtlesim_controller node is used to control the ROS turtlesim simulator. It
 2. `pose_callback`: Callback function, which is called whenever there is a new message on the `/turtle1/pose` topic. It stores the x, y, and theta values from the message in the instance variables of the class.
 3. `voice_cmd_callback`: Callback function, which is called whenever there is a new message on the `/voice_cmd` topic. It parses and converts the received JSON message into a ROS 2 command.
 
-![figure5_text_command](./README.assets/figure5_text_command.png)
-
-![figure6_motion_record](./README.assets/figure6_motion_record.png)
-
 # Result and Disscusion
 
 we send a message in terminal, asking it to move forward for 1 meter.  
 
 The turtle simulator run as we want. 
 
-![figure1_move_before](./README.assets/figure1_move_before.png)
+![figure01_movebefore](./README.assets/figure03_movebefore.png)
 
-![figure2_move_after](./README.assets/figure2_move_after.png)
+![figure02_moveafter](./README.assets/figure04_moveafter.png)
 
 # Conclusion
 
