@@ -4,6 +4,8 @@ Kevin Stark 高梦扬
 
 2024/05/06
 
+not done, still updating...
+
 [toc]
 
 # Introduction
@@ -50,7 +52,7 @@ LLM:
 ## 1. Clone the repo to local computer
 
 ```sh
-git clone https://github.com/ksdreamer/LLM-Robot.git
+git clone https://github.com/ksDreamer/LLM-Robot.git
 ```
 
 ## 2. Environment setup
